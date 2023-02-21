@@ -1,0 +1,247 @@
+<!Doctype html>
+
+<head>
+
+</head>
+
+<body>
+<p><pre><code>
+'''
+# web_scraping_nodejs
+Automation script using puppeteer library and converting the data to json
+Reference webpage for data capture - https://teradek.com/collections/colr/products/anton-bauer-digital-battery?variant=14579104677933
+--------------------------------------------------------------------------------
+
+To use the script - 
+------------------------
+open the terminal / command prompt and run the command : 
+>> node web_scraping.js
+------------------------
+Once the script is completed the output json will be logged on the terminal and a new json file is created in the same directory "converted_to.json"
+
+
+Note : Save the below program in web_scrapping.js file
+'''
+
+
+const puppet = require("puppeteer");
+const fs = require("fs");
+
+puppet.launch().then(async browser => {
+    //browser new page
+    const page = await browser.newPage();
+    //set viewpoint of browser page
+    await page.setViewport({ width: 1000, height: 500 })
+    //launch URL
+    await page.goto('https://teradek.com/collections/colr/products/anton-bauer-digital-battery')
+    
+    //obtain page url of the base page
+    //console.log(await page.url())
+    console.log("Page title: " + await page.title())
+    
+
+    var data = [];
+    var final_json_data = [];
+
+    const b1 = (await page.$x("//label[@class='arrow_box']/span"))[1]
+    const text = await (await b1.getProperty('textContent')).jsonValue()
+    console.log("Text is: " + text)
+    data.push(text)
+    //console.log(data)
+
+    b1.click()
+    console.log('=============================================')
+    console.log('clicked - First link: ')
+    //wait for sometime
+    await page.waitForTimeout(4000)
+    
+    //obtain URL after click
+    console.log(await page.url())
+    
+    const b2 = (await page.$x("//label[@class='arrow_box']/span"))[0]
+    const text2 = await (await b2.getProperty('textContent')).jsonValue()
+    console.log("Text is: " + text2)
+    data.push(text2)
+    console.log(data)
+    let x = data[data.length-1]
+    let y = data[data.length-2]
+    let combination = x + ' + ' + y
+    console.log('Combination 1 is : ' +combination)
+    // TITLE 
+    const title_1 = (await page.$x("//div[@class='grid__item one-whole']/h1"))[0]
+    const title_a = await (await title_1.getProperty('textContent')).jsonValue()
+    console.log('Title ' +title_a)
+    // SKU
+    const sku_1 = (await page.$x("//div[@class='sku grid__item one-whole']/span"))[0]
+    const sku_a = await (await sku_1.getProperty('textContent')).jsonValue()
+    console.log('SKU ' +sku_a)
+    // PRICE
+    const price_1 = (await page.$x("//span[@id='current-price']"))[0]
+    const price_a = await (await price_1.getProperty('textContent')).jsonValue()
+    console.log('Price First ' +price_a)
+
+    b2.click()
+    console.log('=============================================')
+    console.log('clicked - Second link: ')
+    //wait for sometime
+    await page.waitForTimeout(4000)
+
+    //obtain URL after click
+    console.log(await page.url())
+    
+    const b3 = (await page.$x("//label[@class='arrow_box']/span"))[1]
+    const text3 = await (await b3.getProperty('textContent')).jsonValue()
+    console.log("Text is: " + text3)
+    data.push(text3)
+    //console.log(data)
+    let x2 = data[data.length-1]
+    let y2 = data[data.length-2]
+    let combination2 = x2 + ' + ' + y2
+    console.log('Item : ' +combination2)
+    // TITLE
+    const title_2 = (await page.$x("//div[@class='grid__item one-whole']/h1"))[0]
+    const title_b = await (await title_2.getProperty('textContent')).jsonValue()
+    console.log('Title ' +title_b)
+    // SKU
+    const sku_2 = (await page.$x("//div[@class='sku grid__item one-whole']/span"))[0]
+    const sku_b = await (await sku_2.getProperty('textContent')).jsonValue()
+    console.log('SKU ' +sku_b)
+    // PRICE
+    const price_2 = (await page.$x("//span[@id='current-price']"))[0]
+    const price_b = await (await price_2.getProperty('textContent')).jsonValue()
+    console.log('Price ' +price_b)
+
+    var data_2 = {
+        "item" : combination,
+        "product_name" : title_b,
+        "price" : price_b,
+        "SKU" : sku_b,
+    }
+    let response_2 = JSON.stringify(data_2);
+    console.log("json response" +response_2)
+    
+    final_json_data.push(response_2)
+    console.log('=============================================')
+    console.log('Final_json_data :' +final_json_data)
+
+    b3.click()
+    console.log('=============================================')
+    console.log('clicked - Third link: ')
+    //wait for sometime
+    await page.waitForTimeout(4000)
+    
+    console.log(await page.url())
+    const b4 = (await page.$x("//label[@class='arrow_box']/span"))[0]
+    const text4 = await (await b4.getProperty('textContent')).jsonValue()
+    console.log("Text is: " + text4)
+    data.push(text4)
+    //console.log(data)
+    let x3 = data[data.length-1]
+    let y3 = data[data.length-2]
+    let combination3 = x3 + ' + ' + y3
+    console.log('Item : ' +combination3)
+    // TITLE
+    const title_3 = (await page.$x("//div[@class='grid__item one-whole']/h1"))[0]
+    const title_c = await (await title_3.getProperty('textContent')).jsonValue()
+    console.log('Title ' +title_c)
+    // SKU
+    const sku_3 = (await page.$x("//div[@class='sku grid__item one-whole']/span"))[0]
+    const sku_c = await (await sku_3.getProperty('textContent')).jsonValue()
+    console.log('SKU ' +sku_c)
+    // PRICE
+    const price_3 = (await page.$x("//span[@id='current-price']"))[0]
+    const price_c = await (await price_3.getProperty('textContent')).jsonValue()
+    console.log('Price ' +price_c)
+
+    var data_3 = {
+        "item" : combination2,
+        "product_name" : title_c,
+        "price" : price_c,
+        "SKU" : sku_c,
+    }
+    let response_3 = JSON.stringify(data_3);
+    console.log("json response " +response_3)
+    final_json_data.push(response_3)
+    console.log('=============================================')
+    console.log('Final_json_data :' +final_json_data)
+
+    b4.click()
+    console.log('=============================================')
+    console.log('clicked - Forth link: ')
+    //wait for sometime
+    await page.waitForTimeout(4000)
+    
+    console.log(await page.url())
+    const b5 = (await page.$x("//label[@class='arrow_box']/span"))[1]
+    const text5 = await (await b5.getProperty('textContent')).jsonValue()
+    console.log("Text is: " + text5)
+    data.push(text5)
+    //console.log(data)
+    let x4 = data[data.length-1]
+    let y4 = data[data.length-2]
+    let combination4 = x4 + ' + ' + y4
+    console.log('Item : ' +combination4)
+    // TITLE
+    const title_4 = (await page.$x("//div[@class='grid__item one-whole']/h1"))[0]
+    const title_d = await (await title_4.getProperty('textContent')).jsonValue()
+    console.log('Title ' +title_d)
+    // SKU
+    const sku_4 = (await page.$x("//div[@class='sku grid__item one-whole']/span"))[0]
+    const sku_d = await (await sku_4.getProperty('textContent')).jsonValue()
+    console.log('SKU ' +sku_d)
+    // PRICE
+    const price_4 = (await page.$x("//span[@id='current-price']"))[0]
+    const price_d = await (await price_4.getProperty('textContent')).jsonValue()
+    console.log('Price ' +price_d)
+    var data_4 = {
+        "item" : combination3,
+        "product_name" : title_d,
+        "price" : price_d,
+        "SKU" : sku_d,
+    }
+    let response_4 = JSON.stringify(data_4);
+    console.log("json response" +response_4)
+    final_json_data.push(response_4)
+    console.log('=============================================')
+    console.log('Final_json_data :' +final_json_data)
+
+    b5.click()
+    console.log('=============================================')
+    console.log('clicked - Fifth link : ')
+    //wait for sometime
+    await page.waitForTimeout(4000)
+
+    console.log(await page.url())
+    var data_5 = {
+        "item" : combination4,
+        "product_name" : title_a,
+        "price" : price_a,
+        "SKU" : sku_a,
+    }
+    let response_5 = JSON.stringify(data_5);
+    console.log("json response" +response_5)
+    final_json_data.push(response_5)
+
+    console.log('=============================================')
+    console.log('Final_json_data :' +final_json_data)
+    console.log('=============================================')    
+    
+    var final_json_string = JSON.stringify(final_json_data);
+    fs.writeFile("converted_to.json", final_json_string, (err) => {
+        // Error checking
+        if (err) throw err;
+        console.log("==========All json data added to 'converted_to.json' file - file created in the same directory.=============");
+      });
+    
+
+    //browser close
+    await browser.close()
+ })
+
+ 
+</code>
+</pre>
+</p>
+
+
+</body>

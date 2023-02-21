@@ -1,0 +1,92 @@
+<!Doctype html>
+
+<head>
+
+</head>
+
+<body>
+<p><pre><code>
+'''
+This program converts PDF files to text files and it uses OCR - optical character recognition. 
+
+How to Execute this program ?
+
+python3 ocr_pdf_to_text.py <source folder containing pdf files>  <destination text file folder name>
+
+'''
+from PIL import Image
+import pytesseract
+import sys
+from pdf2image import convert_from_path
+import os
+
+pdf_dir = sys.argv[1]
+dest_dir = sys.argv[2]
+
+def pdf_text_convert(pdf_fil, txt):
+	print(f'Extracting pdf {pdf_fil} to {txt}')
+	pdf_file = pdf_dir + pdf_fil
+	pages = convert_from_path(pdf_file, 500)
+	print(pages)
+	page_no = 1
+	for page in pages:
+		file_name = "page_" + str(page_no) + ".jpg"
+		page.save(file_name, 'JPEG')
+		page_no += 1
+
+	text_file = txt
+	f = open(text_file, 'a')
+	
+	for i in range(1, page_no):
+		file_name = "page_" + str(i) + '.jpg'
+		text = str(((pytesseract.image_to_string(Image.open(file_name)))))
+		text = text.replace('-\n', '')
+		f.write(text)
+		f.close()
+
+def create_dirs_files(f):
+	txt = f
+	x = txt.split("pdf")
+	
+	y = 'txt'
+	z = x[0]+y
+	
+	parent = dest_dir
+	os.makedirs(parent, exist_ok = True)
+	
+	dir_file = parent + '/' + z
+	
+	return dir_file
+
+def extract_pdf_files(path = pdf_dir):
+	pdf_files = []
+	for _, _, files in os.walk(path):
+		for fil in files: 
+			if fil.endswith('.pdf'):
+				print(fil)
+				pdf_files.append(fil)
+	return pdf_files
+
+def main():
+	pdf_files = extract_pdf_files(pdf_dir)
+	text_files = []
+	for pdf_f in pdf_files:	
+		text_file = create_dirs_files(pdf_f)
+		text_files.append(text_file)
+
+	print(len(pdf_files))
+	print(len(text_files))	
+	
+	if len(pdf_files) == len(text_files):
+		for i in range(len(text_files)):
+			print(f'Extracting file {i+1}')
+			pdf_text_convert(pdf_files[i], text_files[i])
+
+if __name__ == '__main__':
+	main()
+</code>
+</pre>
+</p>
+
+
+</body>
